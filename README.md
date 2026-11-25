@@ -109,3 +109,22 @@ Como conclusión, en una primera valoración el resultado es elevado
 - El distrito de Arganzuela destaca con un 62,9 % de inspecciones desfavorables, superando ampliamente la media de Madrid (24 %). Sería interesante analizar si estas diferencias están relacionadas con el tipo de establecimientos inspeccionados y el número de inspecciones realizadas.
 
 - Dado que los datos de 2019 solo abarcan hasta finales de junio, considero necesario tener en cuenta esta limitación temporal al realizar comparaciones entre ambos años.
+
+## Conclusiones
+
+Sobre las inspecciones en Madrid, estos son los puntos clave:
+
+Tipo de establecimiento que más suspende: Los bares y restaurantes lideran los resultados desfavorables, con cerca de un 30 % de suspensos (superando la media general del 24 % que muestra el primer gráfico). Les sigue el comercio (alrededor del 23 %) y, por último, el comedor social (con apenas un 11 % aproximadamente).
+
+Distritos que destacan:
+
+Con más inspecciones desfavorables: Arganzuela encabeza la lista por amplio margen (superando las 60 inspecciones desfavorables), seguido por Centro (alrededor de 44) y Tetuán (cerca de 38). En total, 10 distritos superan la media de Madrid (situada en torno a 24).
+
+Con menos inspecciones desfavorables: En el extremo opuesto, destacan Moratalaz, San Blas-Canillejas, Retiro y Vicálvaro, todos por debajo de las 10 inspecciones desfavorables.
+
+Variación de las inspecciones por mes: El volumen muestra una clara tendencia al alza entre 2018 y 2019, combinada con fuertes caídas estacionales en periodos vacacionales:
+
+En 2018: El ritmo es moderado (entre 350 y 625 inspecciones), con picos en mayo (~625) y octubre (~800), pero sufre desplomes pronunciados en verano (julio y agosto, bajando a ~350) y en diciembre (~365).
+
+En 2019: Tras el bajón navideño, la actividad repunta con fuerza a partir de febrero, estabilizándose en un nivel mucho más alto (entre 840 y 1.000 inspecciones mensuales) y alcanzando su máximo histórico de toda la serie en mayo de 2019 (~1.000 inspecciones).
+
