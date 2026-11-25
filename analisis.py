@@ -145,8 +145,76 @@ def fig_top_epigrafes(df):
     fig.savefig(FIG_DIR / "06_top_actividades.png", dpi=120)
     plt.close(fig)
 
+def calidad_datos() -> None:
+    """Diagnostica faltantes y duplicados sin limpiar el dataset original."""
+    # Comprobar duplicados antes de convertir fechas o normalizar blancos.
+    original = pd.read_csv(DATA, encoding="utf-8")
+    df = original.replace(r"^\s*$", pd.NA, regex=True)
+    total = len(df)
+    salida = DATA.parent.parent / "resultados"
+    salida.mkdir(exist_ok=True)
+
+    tabla = pd.DataFrame({
+        "faltantes": df.isna().sum(),
+        "porcentaje": (df.isna().mean().mul(100) if total else
+                       pd.Series(0.0, index=df.columns)).round(2),
+    }).sort_values("faltantes", ascending=False)
+    tabla.index.name = "variable"
+    tabla.to_csv(salida / "valores_faltantes.csv", encoding="utf-8")
+
+    incompletas = int(df.isna().any(axis=1).sum())
+    extras = int(original.duplicated().sum())
+    implicadas = int(original.duplicated(keep=False).sum())
+    fechas = pd.to_datetime(df[COL_FECHA], format="%d/%m/%Y", errors="coerce")
+    invalidas = df[COL_FECHA].notna() & fechas.isna()
+    sin_coordenadas = df[["latitude", "longitude"]].isna().any(axis=1)
+    desconocidos = df[COL_DISTRITO].astype("string").str.strip().eq("Desconocido")
+
+    metricas = {
+        "filas": total,
+        "columnas": len(df.columns),
+        "filas_con_faltantes": incompletas,
+        "copias_duplicadas_adicionales": extras,
+        "filas_implicadas_en_duplicados": implicadas,
+        "fechas_ausentes": int(df[COL_FECHA].isna().sum()),
+        "fechas_no_interpretables": int(invalidas.sum()),
+        "filas_sin_par_completo_de_coordenadas": int(sin_coordenadas.sum()),
+        "distritos_desconocidos": int(desconocidos.sum()),
+        "estados_ausentes": int(df[COL_ESTADO].isna().sum()),
+    }
+    pd.Series(metricas, name="cantidad").rename_axis("metrica").to_csv(
+        salida / "resumen_calidad.csv", encoding="utf-8"
+    )
+
+    print("\n--- CALIDAD DE LOS DATOS ---")
+    print(tabla.to_string())
+    porcentaje = incompletas / total * 100 if total else 0.0
+    print(f"\nFilas con algun faltante: {incompletas:,} ({porcentaje:.2f} %)")
+    print(f"Copias repetidas adicionales: {extras:,}")
+    print(f"Filas implicadas en duplicados: {implicadas:,}")
+    print(f"Fechas ausentes: {metricas['fechas_ausentes']:,}")
+    print(f"Fechas presentes no interpretables: {invalidas.sum():,}")
+    print(f"Filas sin coordenadas completas: {sin_coordenadas.sum():,}")
+    print(f"Distritos etiquetados como Desconocido: {desconocidos.sum():,}")
+
+    con_faltantes = tabla[tabla["faltantes"] > 0]
+    fig, ax = plt.subplots(figsize=(10, max(4, len(con_faltantes) * 0.4)))
+    if not con_faltantes.empty:
+        con_faltantes["porcentaje"].sort_values().plot.barh(ax=ax, color="#264653")
+        ax.set_xlabel("Valores faltantes (%) sobre el total de filas")
+        ax.set_ylabel("")
+    else:
+        ax.text(0.5, 0.5, "No se detectaron valores faltantes",
+                ha="center", va="center", transform=ax.transAxes)
+        ax.set_axis_off()
+    ax.set_title("Valores faltantes por variable")
+    fig.tight_layout()
+    fig.savefig(FIG_DIR / "07_valores_faltantes.png", dpi=120)
+    plt.close(fig)
+    print(f"Diagnostico guardado en {salida}")
 
 if __name__ == "__main__":
+    calidad_datos()
     datos = cargar()
     resumen(datos)
     for f in (fig_estado, fig_estado_por_tipo, fig_distritos, fig_por_mes, fig_mapa, fig_top_epigrafes):
