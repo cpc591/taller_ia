@@ -34,7 +34,32 @@ python analisis.py
 ```
 
 El script imprime el resumen por consola y guarda las figuras en [figuras/](figuras/).
+## Calidad de los datos
 
+La función `calidad_datos()` examina los valores faltantes y los duplicados antes
+de ejecutar el análisis exploratorio. No elimina registros, imputa valores ni
+modifica el CSV original.
+
+Al ejecutar `python analisis.py`, se generan:
+
+- [Tabla de faltantes](resultados/valores_faltantes.csv): cantidad y porcentaje
+  por variable, con el total de filas como denominador.
+- [Resumen de calidad](resultados/resumen_calidad.csv): dimensiones, filas con
+  algún faltante, duplicados, fechas ausentes o no interpretables, coordenadas
+  incompletas, distritos desconocidos y estados ausentes.
+- [Figura de faltantes](figuras/07_valores_faltantes.png): porcentaje de ausencia
+  por variable. Si no hay faltantes, la figura lo indica.
+
+Los faltantes incluyen los reconocidos por `pandas.read_csv` y, para este
+diagnóstico, los textos vacíos o compuestos solo por espacios. La etiqueta
+`Desconocido` se cuenta por separado en la variable distrito.
+
+Los duplicados se comprueban sobre todas las columnas del CSV leído, antes de
+convertir fechas o normalizar blancos. Se distingue entre copias adicionales
+(`duplicated()`) y todas las filas implicadas (`duplicated(keep=False)`). Si una
+fila aparece tres veces, hay dos copias adicionales y tres filas implicadas.
+Esta comprobación no identifica establecimientos repetidos con otros valores
+diferentes ni sustituye la revisión de un identificador de establecimiento.
 ## Resultados principales
 
 | Variable | Valores distintos | Valor más frecuente |
